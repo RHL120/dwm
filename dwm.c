@@ -2170,6 +2170,13 @@ zoom(const Arg *arg)
 	pop(c);
 }
 
+void
+auto_start()
+{
+	for (uint8_t i = 0; i < num_auto_cmds; i++)
+		system (cmds_auto_start[i]);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -2188,6 +2195,7 @@ main(int argc, char *argv[])
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
+	auto_start();
 	run();
 	cleanup();
 	XCloseDisplay(dpy);

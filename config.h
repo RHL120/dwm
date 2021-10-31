@@ -22,7 +22,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = {"1:   ", "2:   ", "3:   ","4:   ", "5:   ", "6:   ","7:   ", "8:   ", "  9  "};
+static const char *tags[] = {" 1:   ", " 2:   ", " 3:   ", " 4:   ", " 5:   ", "   6   ", "   7   ", "   8   ", "   9   "};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -121,3 +121,14 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
+
+const uint8_t num_auto_cmds = 7;
+const char *cmds_auto_start[] = {
+	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation' 1",
+	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation Axes' 6 7 4 5",
+	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation Button' 2",
+	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation Timeout' 50",
+	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation Inertia' 3",
+	"xrandr --output LVDS-1 --off",
+	"/home/rhl120/.local/bin/dwmblocks &"
+};
