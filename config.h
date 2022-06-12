@@ -6,8 +6,8 @@ static const Gap default_gap        = {.isgap = 1, .realgap = 10, .gappx = 15};
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Droid Sans Mono Slashed:size=7.6" };
-static const char dmenufont[]       = "Droid Sans Mono Slashed:size=7.6";
+static const char *fonts[]          = { "Droid Sans Mono Slashed:size=10" };
+static const char dmenufont[]       = "Droid Sans Mono Slashed:size=14";
 
 
 static const char nord0[] = "#2E3440";
@@ -33,7 +33,7 @@ static const Rule rules[] = {
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Zathura",  NULL,	  NULL,       1 << 3,	    0,	         -1 },
 	{ "mpv",      NULL,      NULL,	      1 << 4,       1,	         -1 },
-	{ "qutebrowser",  NULL,       NULL,   1 << 1,       0,           -1 },
+	{ "Brave-browser",  NULL,       NULL,   1 << 1,       0,           -1 },
 };
 
 /* layout(s) */
@@ -65,10 +65,14 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *lib_command[] = { "/home/rhl120/.local/bin/read_dox.sh", NULL };
+static const char *browser[] = { "brave", NULL };
+static const char *youtube[] = { "watch_youtube.py" , NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browser } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_y,      spawn,          {.v = youtube } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = lib_command } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
@@ -126,15 +130,11 @@ static Button buttons[] = {
 };
 
 //could be concatenated into  1 string seprated by ;s but that wouldn't look good
-const uint8_t num_auto_cmds = 7;
+const uint8_t num_auto_cmds = 5;
 const char *cmds_auto_start[] = {
-	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation' 1",
-	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation Axes' 6 7 4 5",
-	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation Button' 2",
-	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation Timeout' 50",
-	"xinput set-prop '/dev/wsmouse' 'WS Pointer Wheel Emulation Inertia' 3",
-	"xrandr --output LVDS-1 --off",
-	"/home/rhl120/.local/bin/dwmblocks &"
-	"qutebrowser&"
-	"st& st&"
+	"rhstatus &",
+	"xwallpaper --stretch /home/rhl120/.local/share/wallpapers/wp.png",
+	"brave &",
+	"st &",
+	"st &"
 };
