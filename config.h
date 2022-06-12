@@ -68,6 +68,7 @@ static const char *lib_command[] = { "/home/rhl120/.local/bin/read_dox.sh", NULL
 static const char *browser[] = { "brave", NULL };
 static const char *youtube[] = { "watch_youtube.py" , NULL };
 
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browser } },
@@ -133,6 +134,7 @@ static Button buttons[] = {
 const uint8_t num_auto_cmds = 5;
 const char *cmds_auto_start[] = {
 	"rhstatus &",
+	"xbindkeys &",
 	"xwallpaper --stretch /home/rhl120/.local/share/wallpapers/wp.png",
 	"brave &",
 	"st &",
