@@ -134,7 +134,7 @@ static Button buttons[] = {
 const uint8_t num_auto_cmds = 5;
 const char *cmds_auto_start[] = {
 	"rhstatus &",
-	"xbindkeys &",
+	"sxhkd &",
 	"xwallpaper --stretch /home/rhl120/.local/share/wallpapers/wp.png",
 	"brave &",
 	"st &",
