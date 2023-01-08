@@ -137,6 +137,7 @@ const char *cmds_auto_start[] = {
 	"sxhkd &",
 	"xwallpaper --stretch /home/rhl120/.local/share/wallpapers/wp.png",
 	"brave &",
-	"st &",
-	"st &"
+	"&alacritty",
+	"&alacritty",
+	"&alacritt&"
 };
