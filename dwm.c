@@ -20,6 +20,7 @@
  *
  * To understand everything else, start reading main().
  */
+#include <X11/XF86keysym.h>
 #include <errno.h>
 #include <locale.h>
 #include <signal.h>
@@ -2174,7 +2175,7 @@ zoom(const Arg *arg)
 void
 auto_start()
 {
-	for (uint8_t i = 0; i < num_auto_cmds; i++)
+	for (uint8_t i = 0; i < sizeof(cmds_auto_start) / sizeof(char *); i++)
 		system (cmds_auto_start[i]);
 }
 
