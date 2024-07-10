@@ -7,7 +7,7 @@ static const Gap default_gap        = {.isgap = 1, .realgap = 10, .gappx = 15};
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Droid Sans Mono Slashed:size=10" };
+static const char *fonts[]          = { "Droid Sans Mono Slashed:size=8.5" };
 static const char dmenufont[]       = "Droid Sans Mono Slashed:size=14";
 
 
@@ -37,6 +37,7 @@ static const Rule rules[] = {
 	{ "Brave-browser",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "tor-browser-default",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "firefox",  NULL,       NULL,   1 << 1,       0,           -1 },
+	{ "Cellwriter",  NULL,       NULL,   0xFF,       0,           -1 },
 };
 
 /* layout(s) */
@@ -68,11 +69,15 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *lib_command[] = { "/home/rhl120/.local/bin/read_dox.sh", NULL };
+static const char *vid_command[] = { "/home/rhl120/.local/bin/watch_vids.sh", NULL };
 static const char *browser[] = { "firefox", NULL };
 static const char *youtube[] = { "watch_youtube.py" , NULL };
-static const char *raisev[] = { "sh", "-c", "mixer vol=+5%;echo refresh |nc localhost 6666", NULL};
-static const char *lowerv[] = { "sh", "-c", "mixer vol=-5;echo refresh |nc localhost 6666", NULL};
+static const char *raisev[] = { "sh", "-c", "amixer set Master 5%+;echo refresh |nc localhost 6666", NULL};
+static const char *lowerv[] = { "sh", "-c", "amixer set Master 5%-;echo refresh |nc localhost 6666", NULL};
 static const char *refresh[] = { "sh", "-c", "echo refresh |nc localhost 6666", NULL};
+static const char *lowerb[] = { "sh", "-c", "xbacklight -dec 5; echo refresh |nc localhost 6666", NULL};
+static const char *raiseb[] = { "sh", "-c", "xbacklight -inc 5; echo refresh |nc localhost 6666", NULL};
+static const char *cellwriter[] = {"cellwriter"};
 	
 
 
@@ -80,14 +85,14 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ 0,                            XF86XK_AudioLowerVolume,      spawn,          {.v = lowerv } },
 	{ 0,                            XF86XK_AudioRaiseVolume,      spawn,          {.v = raisev } },
-	{ 0,                            XK_Caps_Lock,                 spawn,          {.v = refresh } },
-	{ 0,                            XF86XK_MonBrightnessUp,       spawn,          {.v = refresh } },
-	{ 0,                            XF86XK_MonBrightnessDown,     spawn,          {.v = refresh } },
+	{ 0,                            XF86XK_MonBrightnessUp,       spawn,          {.v = raiseb } },
+	{ 0,                            XF86XK_MonBrightnessDown,     spawn,          {.v = lowerb } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browser } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_y,      spawn,          {.v = youtube } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = lib_command } },
+	{ MODKEY,                       XK_w,      spawn,          {.v = vid_command } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -132,7 +137,7 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button2,        spawn,          {.v = cellwriter } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
@@ -144,8 +149,10 @@ static Button buttons[] = {
 
 //could be concatenated into  1 string seprated by ;s but that wouldn't look good
 const char *cmds_auto_start[] = {
+	"sxhkd &",
 	"rhstatus &",
 	"xwallpaper --stretch /home/rhl120/.local/share/wallpapers/wp.png &",
+	"picom --no-fading-openclose &"
 	"firefox &",
 	"alacritty &",
 	"alacritty &"

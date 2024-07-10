@@ -2173,7 +2173,7 @@ zoom(const Arg *arg)
 }
 
 void
-auto_start()
+auto_start(void)
 {
 	for (uint8_t i = 0; i < sizeof(cmds_auto_start) / sizeof(char *); i++)
 		system (cmds_auto_start[i]);
