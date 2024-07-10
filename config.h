@@ -25,6 +25,8 @@ static const char *colors[][3]      = {
 /* tagging */
 static const char *tags[] = {"1:  ", "2:  ", "3:  ", "4:  ", "5:  ", "  6  ", "  7  ", "  8  ", "  9  "};
 
+static const char *dock_title = "CellWriter";
+
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -37,7 +39,7 @@ static const Rule rules[] = {
 	{ "Brave-browser",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "tor-browser-default",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "firefox",  NULL,       NULL,   1 << 1,       0,           -1 },
-	{ "Cellwriter",  NULL,       NULL,   0xFF,       0,           -1 },
+	{ "Cellwriter",  NULL,       NULL,   0xFF,       1,           -1 },
 };
 
 /* layout(s) */

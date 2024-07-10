@@ -21,7 +21,6 @@
  * To understand everything else, start reading main().
  */
 #include <X11/XF86keysym.h>
-#include <errno.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdarg.h>
@@ -142,6 +141,7 @@ struct Monitor {
 	Monitor *next;
 	Window barwin;
 	const Layout *lt[2];
+	const Client *dock;
 };
 
 typedef struct {
@@ -658,6 +658,7 @@ createmon(void)
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
+	m->dock = NULL;
 	return m;
 }
 
@@ -1088,6 +1089,9 @@ manage(Window w, XWindowAttributes *wa)
 	if (c->mon == selmon)
 		unfocus(selmon->sel, 0);
 	c->mon->sel = c;
+	if (!strcmp(c->name, dock_title)) {
+		c->mon->dock = c;
+	}
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
 	focus(NULL);
@@ -1720,8 +1724,8 @@ void
 tile(Monitor *m)
 {
 	unsigned int i, n, h, mw, my, ty;
+	unsigned int dh = m->dock ? m->dock->h : 0;
 	Client *c;
-
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
@@ -1733,12 +1737,12 @@ tile(Monitor *m)
 	for (i = 0, my = ty = m->gap->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 		if (i < m->nmaster) {
 			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gap->gappx;
-			resize(c, m->wx + m->gap->gappx, m->wy + my, mw - (2*c->bw) - m->gap->gappx, h - (2*c->bw), 0);
+			resize(c, m->wx + m->gap->gappx, m->wy + my, mw - (2*c->bw) - m->gap->gappx, h - (2*c->bw)  - dh, 0);
 			if (my + HEIGHT(c) + m->gap->gappx < m->wh)
 				my += HEIGHT(c) + m->gap->gappx;
 		} else {
 			h = (m->wh - ty) / (n - i) - m->gap->gappx;
-			resize(c, m->wx + mw + m->gap->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gap->gappx, h - (2*c->bw), 0);
+			resize(c, m->wx + mw + m->gap->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gap->gappx, h - (2*c->bw) - dh, 0);
 			if (ty + HEIGHT(c) + m->gap->gappx < m->wh)
 				ty += HEIGHT(c) + m->gap->gappx;
 		}
@@ -1826,6 +1830,7 @@ unmanage(Client *c, int destroyed)
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
+	c->mon->dock = NULL;
 	free(c);
 	focus(NULL);
 	updateclientlist();
