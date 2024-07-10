@@ -79,7 +79,7 @@ static const char *lowerv[] = { "sh", "-c", "amixer set Master 5%-;echo refresh 
 static const char *refresh[] = { "sh", "-c", "echo refresh |nc localhost 6666", NULL};
 static const char *lowerb[] = { "sh", "-c", "xbacklight -dec 5; echo refresh |nc localhost 6666", NULL};
 static const char *raiseb[] = { "sh", "-c", "xbacklight -inc 5; echo refresh |nc localhost 6666", NULL};
-static const char *cellwriter[] = {"cellwriter"};
+static const char *cellwriter[] = {"cellwriter", NULL};
 	
 
 
@@ -139,7 +139,7 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = cellwriter } },
+	{ ClkStatusText,        0,              Button1,        spawn,          {.v = cellwriter } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
