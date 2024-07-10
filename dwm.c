@@ -1830,7 +1830,7 @@ unmanage(Client *c, int destroyed)
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
-	c->mon->dock = NULL;
+	c->mon->dock = !strcmp(c->name, dock_title) ? NULL : c->mon->dock;
 	free(c);
 	focus(NULL);
 	updateclientlist();
