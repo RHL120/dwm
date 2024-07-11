@@ -70,7 +70,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
-enum { CornerUpperLeft, CornerUpperRight, CornerDownLeft, CornerDownRight }; /* corners */
+enum { CornerUpperLeft, CornerUpperRight, CournerLowerLeft, CournerLowerRight }; /* corners */
 
 typedef union {
 	int i;
@@ -89,6 +89,7 @@ typedef struct {
 
 typedef struct {
 	unsigned int corner;
+	int w, h;
 	void (*func)(const Arg *arg);
 	const Arg arg;
 } HotCorner;
@@ -149,6 +150,7 @@ struct Monitor {
 	Window barwin;
 	const Layout *lt[2];
 	const Client *dock;
+	Window hotcorners[4];
 };
 
 typedef struct {

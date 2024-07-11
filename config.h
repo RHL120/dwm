@@ -149,6 +149,13 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
+static HotCorner hotcorners[] = {
+	/* corner            width  height function     argument */ 
+	{ CornerUpperRight,    4,     4,    spawn,   { .v = dmenucmd } },
+	{ CournerLowerLeft,    4,     4,    spawn,   { .v = browser }  },
+	{ CournerLowerRight,   4,     4,    spawn,   { .v = termcmd } },
+};
+
 //could be concatenated into  1 string seprated by ;s but that wouldn't look good
 const char *cmds_auto_start[] = {
 	"sxhkd &",
