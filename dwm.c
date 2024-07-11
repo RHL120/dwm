@@ -70,6 +70,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+enum { CornerUpperLeft, CornerUpperRight, CornerDownLeft, CornerDownRight }; /* corners */
 
 typedef union {
 	int i;
@@ -85,6 +86,12 @@ typedef struct {
 	void (*func)(const Arg *arg);
 	const Arg arg;
 } Button;
+
+typedef struct {
+	unsigned int corner;
+	void (*func)(const Arg *arg);
+	const Arg arg;
+} HotCorner;
 
 typedef struct Monitor Monitor;
 typedef struct Client Client;
