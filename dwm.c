@@ -283,7 +283,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[MapRequest] = maprequest,
 	[MotionNotify] = motionnotify,
 	[PropertyNotify] = propertynotify,
-	[UnmapNotify] = unmapnotify
+	[UnmapNotify] = unmapnotify,
 };
 static Atom wmatom[WMLast], netatom[NetLast];
 static int running = 1;
@@ -786,6 +786,9 @@ enternotify(XEvent *e)
 {
 	Client *c;
 	Monitor *m;
+	int i = 0;
+	int j = 0;
+	int found_corner = False;
 	XCrossingEvent *ev = &e->xcrossing;
 
 	if ((ev->mode != NotifyNormal || ev->detail == NotifyInferior) && ev->window != root)
@@ -795,9 +798,20 @@ enternotify(XEvent *e)
 	if (m != selmon) {
 		unfocus(selmon->sel, 1);
 		selmon = m;
-	} else if (!c || c == selmon->sel)
-		return;
-	focus(c);
+	}
+	for (i = 0; i < LENGTH(m->hotcorners); i++) {
+		if (ev->window == m->hotcorners[i]) {
+			for (; j < LENGTH(hotcorners); j++) {
+				if (hotcorners[j].corner == i) {
+					hotcorners[j].func(&hotcorners[j].arg);
+				}
+			}
+			found_corner = True;
+			break;
+		}
+	}
+	if (!found_corner && c && c != selmon->sel)
+		focus(c);
 }
 
 void
@@ -1900,6 +1914,7 @@ updatecorners(void)
 	XSetWindowAttributes cwa = {
 		.override_redirect = True,
 		.background_pixel = 0xFFFFFF,
+		.event_mask = EnterWindowMask,
 	};
 	XClassHint ch = {"dwm", "dwm"};
 	for (m = mons; m; m = m->next) {
@@ -1916,9 +1931,9 @@ updatecorners(void)
                         m->hotcorners[corner] = XCreateWindow(dpy, root, cwx, cwy,
                                         cww, cwh, 0, DefaultDepth(dpy, screen),
                                         CopyFromParent, DefaultVisual(dpy, screen),
-                                        CWOverrideRedirect | CWBackPixel, &cwa);
+                                        CWOverrideRedirect | CWBackPixel | CWEventMask, &cwa);
 		        XDefineCursor(dpy, m->hotcorners[corner], cursor[CurNormal]->cursor);
-		        XMapRaised(dpy, m->hotcorners[corner]);
+		        XMapWindow(dpy, m->hotcorners[corner]);
 		        XSetClassHint(dpy, m->hotcorners[corner], &ch);
                 }
 		m->hotcorners_done = True;
