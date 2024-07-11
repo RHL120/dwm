@@ -70,7 +70,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
-enum { CornerUpperLeft, CornerUpperRight, CournerLowerLeft, CournerLowerRight }; /* corners */
+enum { CornerUpperLeft, CornerUpperRight, CornerLowerLeft, CornerLowerRight }; /* corners */
 
 typedef union {
 	int i;
@@ -151,6 +151,7 @@ struct Monitor {
 	const Layout *lt[2];
 	const Client *dock;
 	Window hotcorners[4];
+	int hotcorners_done;
 };
 
 typedef struct {
@@ -242,6 +243,7 @@ static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
 static void updatebarpos(Monitor *m);
 static void updatebars(void);
+void updatecorners(void);
 static void updateclientlist(void);
 static int updategeom(void);
 static void updatenumlockmask(void);
@@ -587,6 +589,7 @@ configurenotify(XEvent *e)
 		if (updategeom() || dirty) {
 			drw_resize(drw, sw, bh);
 			updatebars();
+                        updatecorners();
 			for (m = mons; m; m = m->next) {
 				for (c = m->clients; c; c = c->next)
 					if (c->isfullscreen)
@@ -1633,6 +1636,7 @@ setup(void)
 	/* init bars */
 	updatebars();
 	updatestatus();
+        updatecorners();
 	/* supporting window for NetWMCheck */
 	wmcheckwin = XCreateSimpleWindow(dpy, root, 0, 0, 1, 1, 0, 0, 0);
 	XChangeProperty(dpy, wmcheckwin, netatom[NetWMCheck], XA_WINDOW, 32,
@@ -1880,6 +1884,44 @@ updatebars(void)
 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
 		XMapRaised(dpy, m->barwin);
 		XSetClassHint(dpy, m->barwin, &ch);
+	}
+}
+
+void
+updatecorners(void)
+{
+	Monitor *m;
+        int i = 0;
+        int cwx = 0;
+        int cwy = 0;
+        int cww = 0;
+        int cwh = 0;
+        unsigned int corner;
+	XSetWindowAttributes cwa = {
+		.override_redirect = True,
+		.background_pixel = 0xFFFFFF,
+	};
+	XClassHint ch = {"dwm", "dwm"};
+	for (m = mons; m; m = m->next) {
+		if (m->hotcorners_done)
+			continue;
+                for (; i < LENGTH(hotcorners); i++) {
+                        corner = hotcorners[i].corner;
+			cww = hotcorners[i].w;
+			cwh = hotcorners[i].h;
+			cwx = corner == CornerUpperLeft || corner == CornerLowerLeft ?
+				m->mx : m->mw - cww;
+			cwy = corner == CornerUpperLeft || corner == CornerUpperRight ?
+				m->my : m->mh - cwh;
+                        m->hotcorners[corner] = XCreateWindow(dpy, root, cwx, cwy,
+                                        cww, cwh, 0, DefaultDepth(dpy, screen),
+                                        CopyFromParent, DefaultVisual(dpy, screen),
+                                        CWOverrideRedirect | CWBackPixel, &cwa);
+		        XDefineCursor(dpy, m->hotcorners[corner], cursor[CurNormal]->cursor);
+		        XMapRaised(dpy, m->hotcorners[corner]);
+		        XSetClassHint(dpy, m->hotcorners[corner], &ch);
+                }
+		m->hotcorners_done = True;
 	}
 }
 
