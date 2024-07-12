@@ -244,6 +244,7 @@ static void unmapnotify(XEvent *e);
 static void updatebarpos(Monitor *m);
 static void updatebars(void);
 void updatecorners(void);
+void raisecorners(Monitor *m);
 static void updateclientlist(void);
 static int updategeom(void);
 static void updatenumlockmask(void);
@@ -1141,9 +1142,7 @@ maprequest(XEvent *e)
 
 	if (!XGetWindowAttributes(dpy, ev->window, &wa))
 		return;
-	if (wa.override_redirect)
-		return;
-	if (!wintoclient(ev->window))
+	if (!wa.override_redirect && !wintoclient(ev->window))
 		manage(ev->window, &wa);
 }
 
@@ -1413,6 +1412,7 @@ restack(Monitor *m)
 				wc.sibling = c->win;
 			}
 	}
+	raisecorners(m);
 	XSync(dpy, False);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
 }
@@ -1937,6 +1937,14 @@ updatecorners(void)
 		        XSetClassHint(dpy, m->hotcorners[corner], &ch);
                 }
 		m->hotcorners_done = True;
+	}
+}
+
+void raisecorners(Monitor *m) {
+	int i = 0;
+	for (; i < LENGTH(m->hotcorners); i++) {
+		if (m->hotcorners[i])
+			XRaiseWindow(dpy, m->hotcorners[i]);
 	}
 }
 
