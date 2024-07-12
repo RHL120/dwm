@@ -16,11 +16,12 @@ static const char nord3[]  =  "#4C566A";
 static const char nord4[]  =  "#D8DEE9";
 static const char nord6[]  =  "#ECEFF4";
 static const char nord11[] =  "#BF616A";
+static const char nord7[]  =  "#8FBCBB";
 
 static const char *colors[][3]      = {
 	/*               fg     bg    border   */
 	[SchemeNorm] = { nord4, nord0, nord0 },
-	[SchemeSel]  = { nord4, nord3,  nord6  },
+	[SchemeSel]  = { nord4, nord3,  nord7  },
 	[SchemeKill]  = { nord4, nord11,  nord6  },
 };
 
