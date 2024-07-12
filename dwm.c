@@ -476,8 +476,13 @@ buttonpress(XEvent *e)
 			click = ClkWinTitle;
 	} else if ((c = wintoclient(ev->window))) {
 		focus(c);
-		c->mon->click_kills = False;
-		killclient(NULL);
+		if (c->mon->click_kills && ev->button == killer_button) {
+			c->mon->click_kills = False;
+			killclient(NULL);
+			restack(selmon);
+			XAllowEvents(dpy, ReplayPointer, CurrentTime);
+			return;
+		}
 		restack(selmon);
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		click = ClkClientWin;
