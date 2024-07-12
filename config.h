@@ -76,7 +76,6 @@ static const char *browser[] = { "firefox", NULL };
 static const char *youtube[] = { "watch_youtube.py" , NULL };
 static const char *raisev[] = { "sh", "-c", "amixer set Master 5%+;echo refresh |nc localhost 6666", NULL};
 static const char *lowerv[] = { "sh", "-c", "amixer set Master 5%-;echo refresh |nc localhost 6666", NULL};
-static const char *refresh[] = { "sh", "-c", "echo refresh |nc localhost 6666", NULL};
 static const char *lowerb[] = { "sh", "-c", "xbacklight -dec 5; echo refresh |nc localhost 6666", NULL};
 static const char *raiseb[] = { "sh", "-c", "xbacklight -inc 5; echo refresh |nc localhost 6666", NULL};
 static const char *cellwriter[] = {"cellwriter", NULL};
@@ -151,10 +150,10 @@ static Button buttons[] = {
 
 static HotCorner hotcorners[] = {
 	/* corner            width  height function     argument */ 
-	{ CornerUpperLeft,    10,     10,    spawn,   { .v = dmenucmd } },
-	{ CornerUpperRight,    10,     10,    spawn,   { .v = dmenucmd } },
-	{ CornerLowerRight,    10,     10,    spawn,   { .v = termcmd } },
-	{ CornerLowerLeft,     10,     10,    spawn,   { .v = browser }  },
+	{ CornerUpperLeft,    5,     5,    spawn,    { .v = termcmd } },
+	{ CornerUpperRight,    5,     5,    spawn,   { .v = browser } },
+	{ CornerLowerRight,    5,     5,    spawn,   { .v = dmenucmd } },
+	{ CornerLowerLeft,     5,     5,    spawn,   { .v = cellwriter }  },
 };
 
 //could be concatenated into  1 string seprated by ;s but that wouldn't look good
