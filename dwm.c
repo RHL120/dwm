@@ -1932,8 +1932,11 @@ updatecorners(void)
                                         cww, cwh, 0, DefaultDepth(dpy, screen),
                                         CopyFromParent, DefaultVisual(dpy, screen),
                                         CWOverrideRedirect | CWBackPixel | CWEventMask, &cwa);
+			uint32_t cardinal_alpha = 0;
+			XChangeProperty(dpy, m->hotcorners[corner], XInternAtom(dpy, "_NET_WM_WINDOW_OPACITY", 0),
+					XA_CARDINAL, 32, PropModeReplace, (uint8_t*) &cardinal_alpha, 1) ;
 		        XDefineCursor(dpy, m->hotcorners[corner], cursor[CurNormal]->cursor);
-		        XMapWindow(dpy, m->hotcorners[corner]);
+		        XMapRaised(dpy, m->hotcorners[corner]);
 		        XSetClassHint(dpy, m->hotcorners[corner], &ch);
                 }
 		m->hotcorners_done = True;
