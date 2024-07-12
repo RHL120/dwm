@@ -150,10 +150,9 @@ static Button buttons[] = {
 
 static HotCorner hotcorners[] = {
 	/* corner            width  height function     argument */ 
-	{ CornerUpperLeft,    5,     5,    spawn,    { .v = termcmd } },
-	{ CornerUpperRight,    5,     5,    spawn,   { .v = browser } },
-	{ CornerLowerRight,    5,     5,    spawn,   { .v = dmenucmd } },
-	{ CornerLowerLeft,     5,     5,    spawn,   { .v = cellwriter }  },
+	{ CornerUpperRight,    10,     10,    spawn,   { .v = browser } },
+	{ CornerLowerRight,    10,     10,    spawn,   { .v = dmenucmd } },
+	{ CornerLowerLeft,     10,     10,    spawn,   { .v = cellwriter }  },
 };
 
 //could be concatenated into  1 string seprated by ;s but that wouldn't look good
