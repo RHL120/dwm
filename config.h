@@ -35,15 +35,15 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Zathura",  NULL,	  NULL,       1 << 3,	    0,	         -1 },
-	{ "mpv",      NULL,      NULL,	      1 << 5,       1,	         -1 },
-	{ "Brave-browser",  NULL,       NULL,   1 << 1,       0,           -1 },
-	{ "tor-browser-default",  NULL,       NULL,   1 << 1,       0,           -1 },
-	{ "firefox",  NULL,       NULL,   1 << 1,       0,           -1 },
-	{ "Cellwriter",  NULL,       NULL,   0xFFFFFFFF,       1,           -1 },
-	{ "Com.github.xournalpp.xournalpp",  NULL,       NULL,   1 << 4,       0,           -1 },
+	/* class                            instance     title     tags mask   isfloating   monitor */
+	{ "Gimp",                            NULL,       NULL,         0,          1,           -1 },
+	{ "Zathura",                         NULL,	 NULL,       1 << 3,	   0,	        -1 },
+	{ "mpv",                             NULL,       NULL,	     1 << 5,       1,	        -1 },
+	{ "Brave-browser",                   NULL,       NULL,       1 << 1,       0,           -1 },
+	{ "tor-browser-default",             NULL,       NULL,       1 << 1,       0,           -1 },
+	{ "firefox",                         NULL,       NULL,       1 << 1,       0,           -1 },
+	{ "Cellwriter",                      NULL,       NULL,     0xFFFFFFFF,     1,           -1 },
+	{ "Com.github.xournalpp.xournalpp",  NULL,       NULL,       1 << 4,       0,           -1 },
 };
 
 /* layout(s) */
@@ -93,37 +93,37 @@ static Key keys[] = {
 	{ 0,                            XF86XK_AudioRaiseVolume,      spawn,          {.v = raisev } },
 	{ 0,                            XF86XK_MonBrightnessUp,       spawn,          {.v = raiseb } },
 	{ 0,                            XF86XK_MonBrightnessDown,     spawn,          {.v = lowerb } },
-	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browser } },
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,                       XK_y,      spawn,          {.v = youtube } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_r,      spawn,          {.v = lib_command } },
-	{ MODKEY,                       XK_w,      spawn,          {.v = vid_command } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,                       XK_minus,  setgaps,        {.i = -5 } },
-	{ MODKEY,                       XK_equal,  setgaps,        {.i = +5 } },
-	{ MODKEY|ShiftMask,             XK_minus,  setgaps,        {.i = GAP_RESET } },
-	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
+	{ MODKEY|ShiftMask,             XK_f,                         spawn,          {.v = browser } },
+	{ MODKEY,                       XK_p,                         spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_y,                         spawn,          {.v = youtube } },
+	{ MODKEY|ShiftMask,             XK_Return,                    spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_r,                         spawn,          {.v = lib_command } },
+	{ MODKEY,                       XK_w,                         spawn,          {.v = vid_command } },
+	{ MODKEY,                       XK_b,                         togglebar,      {0} },
+	{ MODKEY,                       XK_j,                         focusstack,     {.i = +1 } },
+	{ MODKEY,                       XK_k,                         focusstack,     {.i = -1 } },
+	{ MODKEY,                       XK_i,                         incnmaster,     {.i = +1 } },
+	{ MODKEY,                       XK_d,                         incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_h,                         setmfact,       {.f = -0.05} },
+	{ MODKEY,                       XK_l,                         setmfact,       {.f = +0.05} },
+	{ MODKEY,                       XK_Return,                    zoom,           {0} },
+	{ MODKEY,                       XK_Tab,                       view,           {0} },
+	{ MODKEY|ShiftMask,             XK_c,                         killclient,     {0} },
+	{ MODKEY,                       XK_t,                         setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       XK_f,                         setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,                       XK_m,                         setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_space,                     setlayout,      {0} },
+	{ MODKEY|ShiftMask,             XK_space,                     togglefloating, {0} },
+	{ MODKEY,                       XK_0,                         view,           {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             XK_0,                         tag,            {.ui = ~0 } },
+	{ MODKEY,                       XK_comma,                     focusmon,       {.i = -1 } },
+	{ MODKEY,                       XK_period,                    focusmon,       {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_comma,                     tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_period,                    tagmon,         {.i = +1 } },
+	{ MODKEY,                       XK_minus,                     setgaps,        {.i = -5 } },
+	{ MODKEY,                       XK_equal,                     setgaps,        {.i = +5 } },
+	{ MODKEY|ShiftMask,             XK_minus,                     setgaps,        {.i = GAP_RESET } },
+	{ MODKEY|ShiftMask,             XK_equal,                     setgaps,        {.i = GAP_TOGGLE} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -133,7 +133,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_q,                      quit,              {0} },
 };
 
 static unsigned int killer_button = Button1;
