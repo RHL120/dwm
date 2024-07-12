@@ -42,7 +42,7 @@ static const Rule rules[] = {
 	{ "Brave-browser",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "tor-browser-default",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "firefox",  NULL,       NULL,   1 << 1,       0,           -1 },
-	{ "Cellwriter",  NULL,       NULL,   0xFF,       1,           -1 },
+	{ "Cellwriter",  NULL,       NULL,   0xFFFFFFFF,       1,           -1 },
 	{ "Com.github.xournalpp.xournalpp",  NULL,       NULL,   1 << 4,       0,           -1 },
 };
 
