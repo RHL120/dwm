@@ -23,7 +23,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = {"1:  ", "2:  ", "3:  ", "4:  ", "5:  ", "  6  ", "  7  ", "  8  ", "  9  "};
+static const char *tags[] = {"1:  ", "2:  ", "3:  ", "4:  ", "5:  ", "6:  ", "  7  ", "  8  ", "  9  "};
 
 static const char *dock_title = "CellWriter";
 
@@ -35,11 +35,12 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Zathura",  NULL,	  NULL,       1 << 3,	    0,	         -1 },
-	{ "mpv",      NULL,      NULL,	      1 << 4,       1,	         -1 },
+	{ "mpv",      NULL,      NULL,	      1 << 5,       1,	         -1 },
 	{ "Brave-browser",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "tor-browser-default",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "firefox",  NULL,       NULL,   1 << 1,       0,           -1 },
 	{ "Cellwriter",  NULL,       NULL,   0xFF,       1,           -1 },
+	{ "Com.github.xournalpp.xournalpp",  NULL,       NULL,   1 << 4,       0,           -1 },
 };
 
 /* layout(s) */
@@ -79,6 +80,7 @@ static const char *lowerv[] = { "sh", "-c", "amixer set Master 5%-;echo refresh 
 static const char *lowerb[] = { "sh", "-c", "xbacklight -dec 5; echo refresh |nc localhost 6666", NULL};
 static const char *raiseb[] = { "sh", "-c", "xbacklight -inc 5; echo refresh |nc localhost 6666", NULL};
 static const char *cellwriter[] = {"cellwriter", NULL};
+static const char *xournalpp[] = {"xournalpp", NULL};
 	
 
 
@@ -138,7 +140,7 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button1,        spawn,          {.v = cellwriter } },
+	{ ClkStatusText,        0,              Button1,        spawn,          {.v = xournalpp } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
