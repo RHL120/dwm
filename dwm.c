@@ -152,6 +152,7 @@ struct Monitor {
 	const Client *dock;
 	Window hotcorners[4];
 	int hotcorners_done;
+	int click_kills;
 };
 
 typedef struct {
@@ -243,8 +244,8 @@ static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
 static void updatebarpos(Monitor *m);
 static void updatebars(void);
-void updatecorners(void);
-void raisecorners(Monitor *m);
+static void updatecorners(void);
+static void raisecorners(Monitor *m);
 static void updateclientlist(void);
 static int updategeom(void);
 static void updatenumlockmask(void);
@@ -260,6 +261,9 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
+static void toggle_clickkills(const Arg *arg);
+inline static void grab_killerbutton(Client *c);
+inline static void ungrab_killerbutton(Client *c);
 
 /* variables */
 static const char broken[] = "broken";
@@ -448,7 +452,6 @@ buttonpress(XEvent *e)
 	Client *c;
 	Monitor *m;
 	XButtonPressedEvent *ev = &e->xbutton;
-
 	click = ClkRootWin;
 	/* focus monitor if necessary */
 	if ((m = wintomon(ev->window)) && m != selmon) {
@@ -472,6 +475,8 @@ buttonpress(XEvent *e)
 			click = ClkWinTitle;
 	} else if ((c = wintoclient(ev->window))) {
 		focus(c);
+		c->mon->click_kills = False;
+		killclient(NULL);
 		restack(selmon);
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		click = ClkClientWin;
@@ -847,6 +852,8 @@ focus(Client *c)
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 	}
 	selmon->sel = c;
+	if (selmon->click_kills && selmon->sel)
+		grab_killerbutton(selmon->sel);
 	drawbars();
 }
 
@@ -1832,6 +1839,7 @@ unfocus(Client *c, int setfocus)
 	if (!c)
 		return;
 	grabbuttons(c, 0);
+	ungrab_killerbutton(c);
 	XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColBorder].pixel);
 	if (setfocus) {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -2253,6 +2261,28 @@ zoom(const Arg *arg)
 		if (!c || !(c = nexttiled(c->next)))
 			return;
 	pop(c);
+}
+
+void
+toggle_clickkills(const Arg *arg)
+{
+	Client *c = selmon->sel;
+	selmon->click_kills = !selmon->click_kills;
+	if (c) {
+		if (selmon->click_kills)
+			grab_killerbutton(c);
+		else 
+			ungrab_killerbutton(c);
+	}
+}
+
+void grab_killerbutton(Client *c) {
+	XGrabButton(dpy, killer_button, 0, c->win, False, BUTTONMASK, 
+			GrabModeAsync, GrabModeSync, None, None);
+}
+
+void ungrab_killerbutton(Client *c) {
+	XUngrabButton(dpy, killer_button, 0, c->win);
 }
 
 void
