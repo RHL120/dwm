@@ -601,7 +601,7 @@ configurenotify(XEvent *e)
 		if (updategeom() || dirty) {
 			drw_resize(drw, sw, bh);
 			updatebars();
-                        updatecorners();
+			updatecorners();
 			for (m = mons; m; m = m->next) {
 				for (c = m->clients; c; c = c->next)
 					if (c->isfullscreen)
@@ -1670,7 +1670,7 @@ setup(void)
 	/* init bars */
 	updatebars();
 	updatestatus();
-        updatecorners();
+	updatecorners();
 	/* supporting window for NetWMCheck */
 	wmcheckwin = XCreateSimpleWindow(dpy, root, 0, 0, 1, 1, 0, 0, 0);
 	XChangeProperty(dpy, wmcheckwin, netatom[NetWMCheck], XA_WINDOW, 32,
@@ -1926,12 +1926,12 @@ void
 updatecorners(void)
 {
 	Monitor *m;
-        int i = 0;
-        int cwx = 0;
-        int cwy = 0;
-        int cww = 0;
-        int cwh = 0;
-        unsigned int corner;
+	int i = 0;
+	int cwx = 0;
+	int cwy = 0;
+	int cww = 0;
+	int cwh = 0;
+	unsigned int corner;
 	XSetWindowAttributes cwa = {
 		.override_redirect = True,
 		.background_pixel = 0xFFFFFF,
@@ -1941,25 +1941,25 @@ updatecorners(void)
 	for (m = mons; m; m = m->next) {
 		if (m->hotcorners_done)
 			continue;
-                for (; i < LENGTH(hotcorners); i++) {
-                        corner = hotcorners[i].corner;
+		for (; i < LENGTH(hotcorners); i++) {
+			corner = hotcorners[i].corner;
 			cww = hotcorners[i].w;
 			cwh = hotcorners[i].h;
 			cwx = corner == CornerUpperLeft || corner == CornerLowerLeft ?
 				m->mx : m->mw - cww;
 			cwy = corner == CornerUpperLeft || corner == CornerUpperRight ?
 				m->my : m->mh - cwh;
-                        m->hotcorners[corner] = XCreateWindow(dpy, root, cwx, cwy,
-                                        cww, cwh, 0, DefaultDepth(dpy, screen),
-                                        CopyFromParent, DefaultVisual(dpy, screen),
-                                        CWOverrideRedirect | CWBackPixel | CWEventMask, &cwa);
+			m->hotcorners[corner] = XCreateWindow(dpy, root, cwx, cwy,
+					cww, cwh, 0, DefaultDepth(dpy, screen),
+					CopyFromParent, DefaultVisual(dpy, screen),
+					CWOverrideRedirect | CWBackPixel | CWEventMask, &cwa);
 			uint32_t cardinal_alpha = 0;
 			XChangeProperty(dpy, m->hotcorners[corner], XInternAtom(dpy, "_NET_WM_WINDOW_OPACITY", 0),
 					XA_CARDINAL, 32, PropModeReplace, (uint8_t*) &cardinal_alpha, 1) ;
-		        XDefineCursor(dpy, m->hotcorners[corner], cursor[CurNormal]->cursor);
-		        XMapRaised(dpy, m->hotcorners[corner]);
-		        XSetClassHint(dpy, m->hotcorners[corner], &ch);
-                }
+			XDefineCursor(dpy, m->hotcorners[corner], cursor[CurNormal]->cursor);
+			XMapRaised(dpy, m->hotcorners[corner]);
+			XSetClassHint(dpy, m->hotcorners[corner], &ch);
+		}
 		m->hotcorners_done = True;
 	}
 }
@@ -1986,7 +1986,7 @@ updatebarpos(Monitor *m)
 }
 
 void
-updateclientlist()
+updateclientlist(void)
 {
 	Client *c;
 	Monitor *m;
