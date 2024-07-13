@@ -854,7 +854,11 @@ focus(Client *c)
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
-		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
+		if (c->mon->click_kills)
+			XSetWindowBorder(dpy, c->win, scheme[SchemeKill][ColBorder].pixel);
+		
+		else 
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		setfocus(c);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -2278,10 +2282,15 @@ toggle_clickkills(const Arg *arg)
 	Client *c = selmon->sel;
 	selmon->click_kills = !selmon->click_kills;
 	if (c) {
-		if (selmon->click_kills)
+		if (selmon->click_kills) {
+			XSetWindowBorder(dpy, c->win, scheme[SchemeKill][ColBorder].pixel);
 			grab_killerbutton(c);
-		else 
+
+		}
+		else {
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 			ungrab_killerbutton(c);
+		}
 	}
 	drawbars();
 }

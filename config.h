@@ -22,7 +22,7 @@ static const char *colors[][3]      = {
 	/*               fg     bg    border   */
 	[SchemeNorm] = { nord4, nord0, nord0 },
 	[SchemeSel]  = { nord4, nord3,  nord7  },
-	[SchemeKill]  = { nord4, nord11,  nord6  },
+	[SchemeKill]  = { nord4, nord11,  nord11  },
 };
 
 /* tagging */
