@@ -264,6 +264,7 @@ static void zoom(const Arg *arg);
 static void toggle_clickkills(const Arg *arg);
 inline static void grab_killerbutton(Client *c);
 inline static void ungrab_killerbutton(Client *c);
+int dockheight(Monitor *m);
 
 /* variables */
 static const char broken[] = "broken";
@@ -1166,7 +1167,7 @@ void
 monocle(Monitor *m)
 {
 	unsigned int n = 0;
-	unsigned int dockh = m->dock? m->dock->h : 0;
+	unsigned int dockh = dockheight(m);
 	Client *c;
 
 	for (c = m->clients; c; c = c->next)
@@ -1765,7 +1766,7 @@ void
 tile(Monitor *m)
 {
 	unsigned int i, n, h, mw, my, ty;
-	unsigned int dh = m->dock ? m->dock->h : 0;
+	unsigned int dh = dockheight(m);
 	Client *c;
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
@@ -2309,13 +2310,20 @@ toggle_clickkills(const Arg *arg)
 	drawbars();
 }
 
-void grab_killerbutton(Client *c) {
+void grab_killerbutton(Client *c)
+{
 	XGrabButton(dpy, killer_button, 0, c->win, False, BUTTONMASK, 
 			GrabModeAsync, GrabModeSync, None, None);
 }
 
-void ungrab_killerbutton(Client *c) {
+void ungrab_killerbutton(Client *c)
+{
 	XUngrabButton(dpy, killer_button, 0, c->win);
+}
+
+int dockheight(Monitor *m)
+{
+	return m->dock && ISVISIBLE(m->dock) ? m->dock->h : 0;
 }
 
 void
