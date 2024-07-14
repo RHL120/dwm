@@ -245,6 +245,7 @@ static void updatebarpos(Monitor *m);
 static void updatebars(void);
 static void updatecorners(void);
 static void raisecorners(Monitor *m);
+static void updatecornerespos(Monitor *m);
 static void updateclientlist(void);
 static int updategeom(void);
 static void updatenumlockmask(void);
@@ -1956,11 +1957,30 @@ updatecorners(void)
 	}
 }
 
+
 void raisecorners(Monitor *m) {
 	int i = 0;
 	for (; i < LENGTH(m->hotcorners); i++) {
 		if (m->hotcorners[i])
 			XRaiseWindow(dpy, m->hotcorners[i]);
+	}
+}
+
+void updatecornerespos(Monitor *m)
+{
+	XWindowAttributes atts;
+	XWindowChanges changes = {0};
+	unsigned int corner = 0;
+	Window cwin = 0;
+	for (; corner < LENGTH(m->hotcorners); corner++) {
+		cwin = m->hotcorners[corner];
+		if (cwin && XGetWindowAttributes(dpy, cwin, &atts)) {
+			changes.x = corner == CornerUpperLeft || corner == CornerLowerLeft ?
+				m->mx : m->mw - atts.width;
+			changes.y = corner == CornerUpperLeft || corner == CornerUpperRight ?
+				m->my : m->mh - atts.height;
+			XConfigureWindow(dpy, cwin, CWX | CWY, &changes);
+		}
 	}
 }
 
@@ -2032,6 +2052,7 @@ updategeom(void)
 					m->mw = m->ww = unique[i].width;
 					m->mh = m->wh = unique[i].height;
 					updatebarpos(m);
+					updatecornerespos(m);
 				}
 		} else { /* less monitors available nn < n */
 			for (i = nn; i < n; i++) {
@@ -2060,6 +2081,7 @@ updategeom(void)
 			mons->mw = mons->ww = sw;
 			mons->mh = mons->wh = sh;
 			updatebarpos(mons);
+			updatecornerespos(mons);
 		}
 	}
 	if (dirty) {
