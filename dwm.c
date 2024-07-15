@@ -650,6 +650,8 @@ configurerequest(XEvent *e)
 				configure(c);
 			if (ISVISIBLE(c))
 				XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
+			if (c == m->dock)
+				arrange(m);
 		} else
 			configure(c);
 	} else {
