@@ -28,7 +28,7 @@ static const char *colors[][3]      = {
 /* tagging */
 static const char *tags[] = {"1:  ", "2:  ", "3:  ", "4:  ", "5:  ", "6:  ", "  7  ", "  8  ", "  9  "};
 
-static const char *dock_title = "CellWriter";
+static const char *dock_title = "Onboard";
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -42,7 +42,7 @@ static const Rule rules[] = {
 	{ "Brave-browser",                   NULL,       NULL,       1 << 1,       0,           -1 },
 	{ "tor-browser-default",             NULL,       NULL,       1 << 1,       0,           -1 },
 	{ "firefox",                         NULL,       NULL,       1 << 1,       0,           -1 },
-	{ "Cellwriter",                      NULL,       NULL,     0xFFFFFFFF,     1,           -1 },
+	{ "Onboard",                         NULL,       NULL,     0xFFFFFFFF,     1,           -1 },
 	{ "Com.github.xournalpp.xournalpp",  NULL,       NULL,       1 << 4,       0,           -1 },
 };
 
@@ -82,7 +82,7 @@ static const char *raisev[] = { "sh", "-c", "amixer set Master 5%+;echo refresh 
 static const char *lowerv[] = { "sh", "-c", "amixer set Master 5%-;echo refresh |nc localhost 6666", NULL};
 static const char *lowerb[] = { "sh", "-c", "xbacklight -dec 5; echo refresh |nc localhost 6666", NULL};
 static const char *raiseb[] = { "sh", "-c", "xbacklight -inc 5; echo refresh |nc localhost 6666", NULL};
-static const char *cellwriter[] = {"cellwriter", NULL};
+static const char *cellwriter[] = {"onboard", NULL};
 static const char *xournalpp[] = {"xournalpp", NULL};
 	
 
@@ -169,6 +169,7 @@ const char *cmds_auto_start[] = {
 	"xwallpaper --stretch /home/rhl120/.local/share/wallpapers/wp.png &",
 	"picom --no-fading-openclose &"
 	"firefox &",
+	"ibus-daemon -rxRd",
 	"alacritty &",
 	"alacritty &"
 };
