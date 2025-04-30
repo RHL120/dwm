@@ -89,6 +89,10 @@ static const char *screencopy[] = {"/home/rhl120/.local/bin/screenshot.sh", "cop
 static const char *screensel[] = {"/home/rhl120/.local/bin/screenshot.sh", "save", "-s", NULL};
 static const char *screenshot[] = {"/home/rhl120/.local/bin/screenshot.sh", "save", NULL};
 static const char *start[] = {"/home/rhl120/.local/bin/start.sh", NULL};
+static const char *statusbutton4[] = {"sh", "-c", "echo button4 | nc localhost 6666", NULL};
+static const char *statusbutton5[] = {"sh", "-c", "echo button5 | nc localhost 6666", NULL};
+static const char *statusbutton6[] = {"sh", "-c", "echo button6 | nc localhost 6666", NULL};
+static const char *statusbutton7[] = {"sh", "-c", "echo button7 | nc localhost 6666", NULL};
 
 	
 
@@ -156,6 +160,10 @@ static Button buttons[] = {
 	{ ClkWinTitle,          0,              Button2,        zoom,                        {0} },
 	{ ClkWinTitle,          0,              Button1,        toggle_clickkills,           {0} },
 	{ ClkStatusText,        0,              Button1,        spawn,                       {.v = xournalpp } },
+	{ ClkStatusText,        0,              Button4,        spawn,                       {.v = statusbutton4 } },
+	{ ClkStatusText,        0,              Button5,        spawn,                       {.v = statusbutton5 } },
+	{ ClkStatusText,        0,              6,              spawn,                       {.v = statusbutton6 } },
+	{ ClkStatusText,        0,              7,              spawn,                       {.v = statusbutton7 } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,                   {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating,              {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,                 {0} },
