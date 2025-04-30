@@ -82,12 +82,13 @@ static const char *raisev[] = { "sh", "-c", "amixer set Master 5%+;echo refresh 
 static const char *lowerv[] = { "sh", "-c", "amixer set Master 5%-;echo refresh |nc localhost 6666", NULL};
 static const char *lowerb[] = { "sh", "-c", "xbacklight -dec 5; echo refresh |nc localhost 6666", NULL};
 static const char *raiseb[] = { "sh", "-c", "xbacklight -inc 5; echo refresh |nc localhost 6666", NULL};
-static const char *onboard[] = {"onboard", NULL};
+static const char *screenboard[] = {"onboard", NULL};
 static const char *xournalpp[] = {"xournalpp", NULL};
 static const char *screencopysel[] = {"/home/rhl120/.local/bin/screenshot.sh", "copy", "-s", NULL};
 static const char *screencopy[] = {"/home/rhl120/.local/bin/screenshot.sh", "copy", NULL};
 static const char *screensel[] = {"/home/rhl120/.local/bin/screenshot.sh", "save", "-s", NULL};
 static const char *screenshot[] = {"/home/rhl120/.local/bin/screenshot.sh", "save", NULL};
+static const char *start[] = {"/home/rhl120/.local/bin/start.sh", NULL};
 
 	
 
@@ -166,9 +167,8 @@ static Button buttons[] = {
 
 static HotCorner hotcorners[] = {
 	/* corner            width  height function     argument */ 
-	{ CornerUpperRight,    10,     10,    spawn,   { .v = browser } },
-	{ CornerLowerRight,    10,     10,    spawn,   { .v = dmenucmd } },
-	{ CornerLowerLeft,     10,     10,    spawn,   { .v = onboard }  },
+	{ CornerLowerRight,    10,     10,    spawn,   { .v = start } },
+	{ CornerLowerLeft,     10,     10,    spawn,   { .v = screenboard }  },
 };
 
 //could be concatenated into  1 string seprated by ;s but that wouldn't look good
