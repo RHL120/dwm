@@ -152,6 +152,8 @@ struct Monitor {
 	Window hotcorners[4];
 	int hotcorners_done;
 	int click_kills;
+	unsigned int showntags;
+	int barhover;
 };
 
 typedef struct {
@@ -186,6 +188,7 @@ static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
 static void drawbars(void);
 static void enternotify(XEvent *e);
+static void leavenotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
@@ -282,6 +285,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[ConfigureNotify] = configurenotify,
 	[DestroyNotify] = destroynotify,
 	[EnterNotify] = enternotify,
+	[LeaveNotify] = leavenotify,
 	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
@@ -464,7 +468,7 @@ buttonpress(XEvent *e)
 	if (ev->window == selmon->barwin) {
 		i = x = 0;
 		do
-			x += TEXTW(tags[i]);
+			x += (selmon->showntags & 1 << i)? TEXTW(tags[i]) : 0;
 		while (ev->x >= x && ++i < LENGTH(tags));
 		if (i < LENGTH(tags)) {
 			click = ClkTagBar;
@@ -741,6 +745,7 @@ drawbar(Monitor *m)
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
 	Client *c;
+	m->showntags = 0;
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
@@ -750,20 +755,25 @@ drawbar(Monitor *m)
 	}
 
 	for (c = m->clients; c; c = c->next) {
-		occ |= c->tags;
+		occ = m->showntags |= c->tags;
 		if (c->isurgent)
 			urg |= c->tags;
 	}
+	m->showntags = m->barhover? UINT32_MAX : m->showntags | m->tagset[m->seltags];
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
-		w = TEXTW(tags[i]);
-		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
-		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i);
-		x += w;
+		if (m->showntags & 1 << i) {
+			w = TEXTW(tags[i]);
+			drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? 
+					SchemeSel : SchemeNorm]);
+			drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
+			if (occ & 1 << i)
+				drw_rect(drw, x + boxs, boxs, boxw, boxw,
+						m == selmon && selmon->sel
+						&& selmon->sel->tags & 1 << i,
+						urg & 1 << i);
+			x += w;
+		}
 	}
 	w = blw = TEXTW(m->ltsymbol);
 	drw_setscheme(drw, scheme[SchemeNorm]);
@@ -813,6 +823,11 @@ enternotify(XEvent *e)
 		unfocus(selmon->sel, 1);
 		selmon = m;
 	}
+	if (ev->window == m->barwin) {
+		m->barhover = 1;
+		drawbar(m);
+		return;
+	}
 	for (i = 0; i < LENGTH(m->hotcorners); i++) {
 		if (ev->window == m->hotcorners[i]) {
 			for (; j < LENGTH(hotcorners); j++) {
@@ -826,6 +841,16 @@ enternotify(XEvent *e)
 	}
 	if (!found_corner && c && c != selmon->sel)
 		focus(c);
+}
+
+void
+leavenotify(XEvent *e) {
+	XCrossingEvent *ev = &e->xcrossing;
+	Monitor *m = wintomon(ev->window);
+	if (ev->window == m->barwin) {
+		m->barhover = 0;
+		drawbar(m);
+	}
 }
 
 void
@@ -1912,7 +1937,10 @@ updatebars(void)
 		m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww, bh, 0, DefaultDepth(dpy, screen),
 				CopyFromParent, DefaultVisual(dpy, screen),
 				CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
+		m->showntags = 0;
+		m->barhover = 0;
 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
+		XSelectInput(dpy, m->barwin, LeaveWindowMask | EnterWindowMask | ButtonPressMask);
 		XMapRaised(dpy, m->barwin);
 		XSetClassHint(dpy, m->barwin, &ch);
 	}
