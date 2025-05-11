@@ -153,6 +153,7 @@ struct Monitor {
 	int hotcorners_done;
 	int click_kills;
 	unsigned int showntags;
+	int barhover;
 };
 
 typedef struct {
@@ -187,6 +188,7 @@ static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
 static void drawbars(void);
 static void enternotify(XEvent *e);
+static void leavenotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
@@ -283,6 +285,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[ConfigureNotify] = configurenotify,
 	[DestroyNotify] = destroynotify,
 	[EnterNotify] = enternotify,
+	[LeaveNotify] = leavenotify,
 	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
@@ -756,7 +759,7 @@ drawbar(Monitor *m)
 		if (c->isurgent)
 			urg |= c->tags;
 	}
-	m->showntags |= m->tagset[m->seltags];
+	m->showntags = m->barhover? UINT32_MAX : m->showntags | m->tagset[m->seltags];
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
 		if (m->showntags & 1 << i) {
@@ -820,6 +823,11 @@ enternotify(XEvent *e)
 		unfocus(selmon->sel, 1);
 		selmon = m;
 	}
+	if (ev->window == m->barwin) {
+		m->barhover = 1;
+		drawbar(m);
+		return;
+	}
 	for (i = 0; i < LENGTH(m->hotcorners); i++) {
 		if (ev->window == m->hotcorners[i]) {
 			for (; j < LENGTH(hotcorners); j++) {
@@ -833,6 +841,16 @@ enternotify(XEvent *e)
 	}
 	if (!found_corner && c && c != selmon->sel)
 		focus(c);
+}
+
+void
+leavenotify(XEvent *e) {
+	XCrossingEvent *ev = &e->xcrossing;
+	Monitor *m = wintomon(ev->window);
+	if (ev->window == m->barwin) {
+		m->barhover = 0;
+		drawbar(m);
+	}
 }
 
 void
@@ -1920,7 +1938,9 @@ updatebars(void)
 				CopyFromParent, DefaultVisual(dpy, screen),
 				CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
 		m->showntags = 0;
+		m->barhover = 0;
 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
+		XSelectInput(dpy, m->barwin, LeaveWindowMask | EnterWindowMask | ButtonPressMask);
 		XMapRaised(dpy, m->barwin);
 		XSetClassHint(dpy, m->barwin, &ch);
 	}
