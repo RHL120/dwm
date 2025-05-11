@@ -181,6 +181,7 @@ static HotCorner hotcorners[] = {
 
 //could be concatenated into  1 string seprated by ;s but that wouldn't look good
 const char *cmds_auto_start[] = {
+	"xss-lock --transfer-sleep-lock -- xsecurelock &"
 	"sxhkd &",
 	"rhstatus &",
 	"xwallpaper --stretch /home/rhl120/.local/share/wallpapers/wp.png &",
