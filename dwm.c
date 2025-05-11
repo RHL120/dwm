@@ -152,6 +152,7 @@ struct Monitor {
 	Window hotcorners[4];
 	int hotcorners_done;
 	int click_kills;
+	unsigned int showntags;
 };
 
 typedef struct {
@@ -464,7 +465,7 @@ buttonpress(XEvent *e)
 	if (ev->window == selmon->barwin) {
 		i = x = 0;
 		do
-			x += TEXTW(tags[i]);
+			x += (selmon->showntags & 1 << i)? TEXTW(tags[i]) : 0;
 		while (ev->x >= x && ++i < LENGTH(tags));
 		if (i < LENGTH(tags)) {
 			click = ClkTagBar;
@@ -741,6 +742,7 @@ drawbar(Monitor *m)
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
 	Client *c;
+	m->showntags = 0;
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon) { /* status is only drawn on selected monitor */
@@ -750,13 +752,14 @@ drawbar(Monitor *m)
 	}
 
 	for (c = m->clients; c; c = c->next) {
-		occ |= c->tags;
+		occ = m->showntags |= c->tags;
 		if (c->isurgent)
 			urg |= c->tags;
 	}
+	m->showntags |= m->tagset[m->seltags];
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
-		if (occ & 1 << i || m->tagset[m->seltags] & 1 << i) {
+		if (m->showntags & 1 << i) {
 			w = TEXTW(tags[i]);
 			drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? 
 					SchemeSel : SchemeNorm]);
@@ -1916,6 +1919,7 @@ updatebars(void)
 		m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww, bh, 0, DefaultDepth(dpy, screen),
 				CopyFromParent, DefaultVisual(dpy, screen),
 				CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
+		m->showntags = 0;
 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
 		XMapRaised(dpy, m->barwin);
 		XSetClassHint(dpy, m->barwin, &ch);
