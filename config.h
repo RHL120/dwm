@@ -75,8 +75,8 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
-static const char *lib_command[] = { "/home/rhl120/.local/bin/read_dox.sh", NULL };
-static const char *vid_command[] = { "/home/rhl120/.local/bin/watch_vids.sh", NULL };
+static const char *lib_command[] = { "read_dox.sh", NULL };
+static const char *vid_command[] = { "watch_vids.sh", NULL };
 static const char *browser[] = { "firefox", NULL };
 static const char *youtube[] = { "watch_youtube.py" , NULL };
 static const char *raisev[] = { "sh", "-c", "amixer set Master 5%+;echo refresh |nc localhost 6666", NULL};
@@ -85,11 +85,11 @@ static const char *lowerb[] = { "sh", "-c", "xbacklight -dec 5; echo refresh |nc
 static const char *raiseb[] = { "sh", "-c", "xbacklight -inc 5; echo refresh |nc localhost 6666", NULL};
 static const char *screenboard[] = {"onboard", NULL};
 static const char *xournalpp[] = {"xournalpp", NULL};
-static const char *screencopysel[] = {"/home/rhl120/.local/bin/screenshot.sh", "copy", "-s", NULL};
-static const char *screencopy[] = {"/home/rhl120/.local/bin/screenshot.sh", "copy", NULL};
-static const char *screensel[] = {"/home/rhl120/.local/bin/screenshot.sh", "save", "-s", NULL};
-static const char *screenshot[] = {"/home/rhl120/.local/bin/screenshot.sh", "save", NULL};
-static const char *start[] = {"/home/rhl120/.local/bin/start.sh", NULL};
+static const char *screencopysel[] = {"screenshot.sh", "copy", "-s", NULL};
+static const char *screencopy[] = {"screenshot.sh", "copy", NULL};
+static const char *screensel[] = {"screenshot.sh", "save", "-s", NULL};
+static const char *screenshot[] = {"screenshot.sh", "save", NULL};
+static const char *start[] = {"start.sh", NULL};
 static const char *statusbutton4[] = {"sh", "-c", "echo button4 | nc localhost 6666", NULL};
 static const char *statusbutton5[] = {"sh", "-c", "echo button5 | nc localhost 6666", NULL};
 static const char *statusbutton6[] = {"sh", "-c", "echo button6 | nc localhost 6666", NULL};
@@ -191,7 +191,7 @@ const char *cmds_auto_start[] = {
 	"xss-lock --transfer-sleep-lock -- xsecurelock &"
 	"sxhkd &",
 	"rhstatus &",
-	"xwallpaper --stretch /home/rhl120/.local/share/wallpapers/wp.png &",
+	"xwallpaper --stretch $XDG_DATA_HOME/wallpapers/wp.png &",
 	"picom --no-fading-openclose &"
 	"firefox &",
 	"ibus-daemon -rxRd",
