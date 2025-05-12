@@ -72,6 +72,8 @@ enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 enum { CornerUpperLeft, CornerUpperRight, CornerLowerLeft, CornerLowerRight }; /* corners */
 
+enum { SectionNone, SectionTags, SectionLayout, SectionTitle, SectionStatus }; /* bar sections */
+
 typedef union {
 	int i;
 	unsigned int ui;
@@ -86,6 +88,13 @@ typedef struct {
 	void (*func)(const Arg *arg);
 	const Arg arg;
 } Button;
+
+typedef struct {
+	unsigned int section;
+	int enter;
+	void (*func)(const Arg *arg);
+	const Arg arg;
+} BarHover;
 
 typedef struct {
 	unsigned int corner;
@@ -153,7 +162,8 @@ struct Monitor {
 	int hotcorners_done;
 	int click_kills;
 	unsigned int showntags;
-	int barhover;
+	int peektags;
+	unsigned int hoversection;
 };
 
 typedef struct {
@@ -188,7 +198,6 @@ static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
 static void drawbars(void);
 static void enternotify(XEvent *e);
-static void leavenotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
@@ -234,6 +243,7 @@ static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
+static void togglepeektags(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *);
@@ -285,7 +295,6 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[ConfigureNotify] = configurenotify,
 	[DestroyNotify] = destroynotify,
 	[EnterNotify] = enternotify,
-	[LeaveNotify] = leavenotify,
 	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
@@ -759,7 +768,7 @@ drawbar(Monitor *m)
 		if (c->isurgent)
 			urg |= c->tags;
 	}
-	m->showntags = m->barhover? UINT32_MAX : m->showntags | m->tagset[m->seltags];
+	m->showntags = m->peektags? UINT32_MAX : m->showntags | m->tagset[m->seltags];
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
 		if (m->showntags & 1 << i) {
@@ -823,11 +832,6 @@ enternotify(XEvent *e)
 		unfocus(selmon->sel, 1);
 		selmon = m;
 	}
-	if (ev->window == m->barwin) {
-		m->barhover = 1;
-		drawbar(m);
-		return;
-	}
 	for (i = 0; i < LENGTH(m->hotcorners); i++) {
 		if (ev->window == m->hotcorners[i]) {
 			for (; j < LENGTH(hotcorners); j++) {
@@ -841,16 +845,6 @@ enternotify(XEvent *e)
 	}
 	if (!found_corner && c && c != selmon->sel)
 		focus(c);
-}
-
-void
-leavenotify(XEvent *e) {
-	XCrossingEvent *ev = &e->xcrossing;
-	Monitor *m = wintomon(ev->window);
-	if (ev->window == m->barwin) {
-		m->barhover = 0;
-		drawbar(m);
-	}
 }
 
 void
@@ -1210,9 +1204,35 @@ void
 motionnotify(XEvent *e)
 {
 	static Monitor *mon = NULL;
+	int i, x, j;
+	unsigned int section, oldsection;
 	Monitor *m;
 	XMotionEvent *ev = &e->xmotion;
+	m = wintomon(ev->window);
+	if (ev->window == m->barwin) {
+		i = x = 0;
+		do
+			x += (selmon->showntags & 1 << i)? TEXTW(tags[i]) : 0;
+		while (ev->x >= x && ++i < LENGTH(tags));
+		if (i < LENGTH(tags)) {
+			section = SectionTags;
+		} else if (ev->x < x + blw)
+			section = SectionLayout;
+		else if (ev->x > selmon->ww - (int)TEXTW(stext))
+			section = SectionStatus;
+		else
+			section = SectionTitle;
+		oldsection = m->hoversection;
+		m->hoversection = section;
+		if (oldsection != section) {
+			for (i = 0; i < LENGTH(barhovers); i++) {
+				if ((oldsection == barhovers[i].section && !barhovers[i].enter)
+						|| ((section == barhovers[i].section && barhovers[i].enter)))
+					barhovers[i].func(&barhovers[i].arg);
 
+			}
+		}
+	}
 	if (ev->window != root)
 		return;
 	if ((m = recttomon(ev->x_root, ev->y_root, 1, 1)) != mon && mon) {
@@ -1770,6 +1790,10 @@ spawn(const Arg *arg)
 		exit(EXIT_SUCCESS);
 	}
 }
+void togglepeektags(const Arg *arg) {
+	selmon->peektags = arg->i;
+	drawbar(selmon);
+}
 
 void
 tag(const Arg *arg)
@@ -1938,9 +1962,9 @@ updatebars(void)
 				CopyFromParent, DefaultVisual(dpy, screen),
 				CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
 		m->showntags = 0;
-		m->barhover = 0;
+		m->peektags = 0;
 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
-		XSelectInput(dpy, m->barwin, LeaveWindowMask | EnterWindowMask | ButtonPressMask);
+		XSelectInput(dpy, m->barwin, PointerMotionMask | ButtonPressMask);
 		XMapRaised(dpy, m->barwin);
 		XSetClassHint(dpy, m->barwin, &ch);
 	}

@@ -173,6 +173,12 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,                   {0} },
 };
 
+static BarHover barhovers[] = {
+	/* section           enter=1/exit=0           function           argument */
+	{ SectionTags,       1,                       togglepeektags,    {.i = 1} },
+	{ SectionTags,       0,                       togglepeektags,    {.i = 0} },
+};
+
 static HotCorner hotcorners[] = {
 	/* corner            width  height function     argument */ 
 	{ CornerLowerRight,    10,     10,    spawn,   { .v = start } },
