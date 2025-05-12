@@ -694,6 +694,8 @@ createmon(void)
 	m->showbar = showbar;
 	m->topbar = topbar;
 	m->gap = malloc(sizeof(Gap));
+	m->hoversection = SectionNone;
+	m->peektags = 0;
 	gap_copy(m->gap, &default_gap);
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 	m->dock = NULL;
@@ -1980,7 +1982,6 @@ updatebars(void)
 				CopyFromParent, DefaultVisual(dpy, screen),
 				CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
 		m->showntags = 0;
-		m->peektags = 0;
 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
 		XSelectInput(dpy, m->barwin, PointerMotionMask | ButtonPressMask | LeaveWindowMask);
 		XMapRaised(dpy, m->barwin);
