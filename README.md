@@ -4,3 +4,4 @@
 - Kill mode (select a window to close it)
 - Cycling through layouts on click
 - Hide unused tags (and show them on bar hover)
+- Hover over a given section of the bar to execute events
