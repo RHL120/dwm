@@ -198,6 +198,7 @@ static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
 static void drawbars(void);
 static void enternotify(XEvent *e);
+static void leavenotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
@@ -295,6 +296,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[ConfigureNotify] = configurenotify,
 	[DestroyNotify] = destroynotify,
 	[EnterNotify] = enternotify,
+	[LeaveNotify] = leavenotify,
 	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
@@ -847,6 +849,22 @@ enternotify(XEvent *e)
 		focus(c);
 }
 
+
+void
+leavenotify(XEvent *e) {
+	XCrossingEvent *ev = &e->xcrossing;
+	Monitor *m = wintomon(ev->window);
+	unsigned int oldsection;
+	int i;
+	if (ev->window == m->barwin) {
+		oldsection = m->hoversection;
+		m->hoversection = SectionNone;
+		for (i = 0; i < LENGTH(barhovers); i++)
+			if (barhovers[i].section == oldsection && !barhovers[i].enter)
+				barhovers[i].func(&barhovers[i].arg);
+	}
+}
+
 void
 expose(XEvent *e)
 {
@@ -1204,7 +1222,7 @@ void
 motionnotify(XEvent *e)
 {
 	static Monitor *mon = NULL;
-	int i, x, j;
+	int i, x;
 	unsigned int section, oldsection;
 	Monitor *m;
 	XMotionEvent *ev = &e->xmotion;
@@ -1964,7 +1982,7 @@ updatebars(void)
 		m->showntags = 0;
 		m->peektags = 0;
 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
-		XSelectInput(dpy, m->barwin, PointerMotionMask | ButtonPressMask);
+		XSelectInput(dpy, m->barwin, PointerMotionMask | ButtonPressMask | LeaveWindowMask);
 		XMapRaised(dpy, m->barwin);
 		XSetClassHint(dpy, m->barwin, &ch);
 	}
