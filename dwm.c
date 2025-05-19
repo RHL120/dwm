@@ -2115,18 +2115,21 @@ toggle_clickkills(const Arg *arg)
 	drawbars();
 }
 
-void grab_killerbutton(Client *c)
+void
+grab_killerbutton(Client *c)
 {
 	XGrabButton(dpy, killer_button, 0, c->win, False, BUTTONMASK, 
 			GrabModeAsync, GrabModeSync, None, None);
 }
 
-void ungrab_killerbutton(Client *c)
+void
+ungrab_killerbutton(Client *c)
 {
 	XUngrabButton(dpy, killer_button, 0, c->win);
 }
 
-int dockheight(Monitor *m)
+int
+dockheight(Monitor *m)
 {
 	return m->dock && ISVISIBLE(m->dock) ? m->dock->h : 0;
 }
